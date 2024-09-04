@@ -13,5 +13,5 @@ Ce projet est un clone de l'application Spotify réalisé avec React.js et Tailw
 1. Clonez le repository :
 
    ```bash
-   git clone https://github.com/your-username/spotify-clone.git
+   git clone https://github.com/gery-guedegbe/Spotify-Website-Clone.git
    ```
