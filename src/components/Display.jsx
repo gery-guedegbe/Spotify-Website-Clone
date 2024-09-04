@@ -1,23 +1,32 @@
-import { Route, Routes, useLocation } from "react-router-dom";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import DisplayHome from "./DisplayHome";
 import DisplayAlbum from "./DisplayAlbum";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { albumsData } from "../assets/frontend-assets/assets";
 
 const Display = () => {
   const displayRef = useRef();
   const location = useLocation();
-  const isAlbum = location.pathname.includes("album");
-  const albumId = isAlbum ? location.pathname.slice(-1) : "";
-  const bgColor = albumsData[Number(albumId)].bgColor;
+  const [bgColor, setBgColor] = useState("#121212");
 
   useEffect(() => {
+    const path = location.pathname;
+    const isAlbum = path.includes("album");
+    const albumId = isAlbum ? path.split("/").pop() : "";
+
     if (isAlbum) {
-      displayRef.current.style.background = `linear-gradient(${bgColor}, #121212)`;
+      const album = albumsData.find((alb) => alb.id === Number(albumId));
+      setBgColor(album ? album.bgColor : "#121212");
     } else {
-      displayRef.current.style.background = `#121212`;
+      setBgColor("#121212");
     }
-  });
+  }, [location.pathname]);
+
+  useEffect(() => {
+    if (displayRef.current) {
+      displayRef.current.style.background = `linear-gradient(${bgColor}, #121212)`;
+    }
+  }, [bgColor]);
 
   return (
     <div
@@ -27,6 +36,8 @@ const Display = () => {
       <Routes>
         <Route path="/" element={<DisplayHome />} />
         <Route path="/album/:id" element={<DisplayAlbum />} />
+        {/* Redirection vers / pour les routes non définies */}
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </div>
   );
